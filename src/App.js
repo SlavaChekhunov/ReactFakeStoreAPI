@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function App() {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios({
+      url: "https://fakestoreapi.com/products/category/women's clothing",
+      method: "GET",
+      dataResponse: "JSON",
+    })
+      .then((response) => {
+        console.log(response.data);
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {loading && (
+        <div>
+          {""}
+          <h1>Loading...</h1>
+        </div>
+      )}
+
+      {data.map((product) => (
+        <div key={product.id}>
+          <div>
+            <img src={product.image} alt="mens clothing" />
+          </div>
+          <h2>{product.title}</h2>
+          <p>{product.description}</p>
+          <p>{product.price}</p>
+        </div>
+      ))}
     </div>
   );
 }
